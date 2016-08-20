@@ -1,3 +1,10 @@
+# coding=utf-8
+
+# Created by Deserts
+# email: i@panjunwen.com
+# site: https://panjunwen.com/
+# date: 2016-08-20
+
 from PIL import Image
 from StringIO import StringIO
 import math
