@@ -86,7 +86,8 @@ class SeatReservation(object):
             1: reached the limit, can't reserve
             2: the specific seat has been reserved by another user
             3: the system has not been opened up.
-            4: other condition
+            4: the account is limitted
+            -1: unkown error
         '''
         seatInfo = {
             "date": self.date,
@@ -101,7 +102,7 @@ class SeatReservation(object):
             info = soup.dd.text
         except:
             info = None
-        print "POST data: ", seatInfo
+        print "post data: ", seatInfo
         # deal with the response
         infoSlice = info[6:13]
         if info[:3] == u"凭证号" or infoSlice == u"已有1个有效预":
@@ -113,8 +114,10 @@ class SeatReservation(object):
             return 2
         elif infoSlice == u"系统可预约时间":
             return 3
-        elif info is None:
+        elif infoSlice == u"对不起, 您的":
             return 4
+        else:
+            return -1
 
     def getSeatID(self, room, seat):
         '''
@@ -177,7 +180,10 @@ class SeatReservation(object):
             random.shuffle(seats)
             for seat in random:
                 seat = self.getSeatID()
-                self.reserve(seat, start, end)
+                status = self.reserve(seat, start, end)
+                if status < 2:
+                    return status
+        return None
 
     def autoReserve(self, schedtime, room, seat, start, end, randRsv=False):
         '''
@@ -188,20 +194,17 @@ class SeatReservation(object):
         '''
         now = datetime.datetime.now()
         if now > schedtime:
-            return
+            return None
         timeDelta = (schedtime - now).seconds
         time.sleep(timeDelta)
         # sleep timeDelta seconds then reserve
-        # the session may be timeout
+        # check account status
         if self.loginStatusCheck() is False:
             self.login()
         while True:
             status = self.reserve(seat, start, end)
             if status == 2 and randRsv:
-                self.randomReserve(room, start, end)
+                return self.randomReserve(room, start, end)
+            if status != 3:
                 break
-            if status < 2:
-                break
-            if status == 4:
-                self.login()
         return status
