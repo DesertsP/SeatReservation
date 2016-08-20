@@ -1,4 +1,4 @@
-# Seat Reservation 图书馆座位自动预约
+# 图书馆座位自动预约
 
 图书馆座位自动预约(Python爬虫)
 
@@ -14,6 +14,10 @@
 **其他文件说明：**
 
 Seat.py为爬虫及功能实现部分，SeatReservationGUI.py是用Tkinter简单实现的GUI，界面在 Mac OS 排布，Windows可能丑到不能看，请自行调整或使用其他GUI模块。
+
+captcha.py为验证码识别部分，captcha_train.py用来生成训练集，由于该选座系统验证码识别起来难度不大，所以不需要继续添加训练样本。
+
+至于校园网登录，由于某校的Dr.COM登录验证太简单，顺便集成进来了。其他院校请自行移除或修改。
 
 ![](https://raw.githubusercontent.com/panjunwen/SeatReservation/master/Screen%20Shot.png)
 
